@@ -7,7 +7,12 @@
 
 import streamlit as st
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    layout="wide",
+    page_title="AI Paper Insight",
+    page_icon="🔬",
+    initial_sidebar_state="expanded"
+)
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -23,16 +28,37 @@ import io
 
 # Title
 # color:#00FFFF;
-st.markdown(
-    "<h1 style='text-align:center; '>AI-Powered Research Paper Summarizer & Insight Extractor</h1>",
-    unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+.main-header {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 50%, #0077aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    animation: glow 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+.main-subtitle {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.4rem;
+    color: #a0a0a0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+@keyframes glow {
+    from { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.3)); }
+    to { filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.6)); }
+}
+</style>
+""", unsafe_allow_html=True)
 
-# Small description
-st.markdown(
-    "<p style='text-align:center; color:white;'>Ask questions and get AI-powered insights from research papers</p>",
-    unsafe_allow_html=True
-)
+st.markdown('<div class="main-header">🔬 AI-Powered Research Paper Insight Engine</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-subtitle">Unleash AI magic on your research papers • Ask • Discover • Visualize</div>', unsafe_allow_html=True)
 
 # Tabs
 
@@ -44,12 +70,96 @@ tab1, tab2 = st.tabs(['Research Paper QA', "Knowledge Graph Explorer"])
 with tab1:
     st.markdown("""
     <style>
-    .stTextInput input {
-        background-color: #F5F5F5;
-        color: #000000;
-        border-radius: 10px;
-        border: 2px solid #00FFFF;
-        padding: 10px;
+    /* Pro + Playful Theme */
+    .stApp {
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+    }
+    .css-1d391kg {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+    }
+    .stTextInput > label > div > div > input {
+        background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,212,255,0.1));
+        border: 2px solid transparent;
+        border-radius: 15px;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,212,255,0.1);
+    }
+    .stTextInput > label > div > div > input:focus {
+        border-color: #00d4ff;
+        box-shadow: 0 0 0 3px rgba(0,212,255,0.2), 0 0 30px rgba(0,212,255,0.4);
+        transform: scale(1.02);
+    }
+    .stButton > button {
+        background: linear-gradient(135deg, #00d4ff, #0099cc);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: 0 10px 30px rgba(0,212,255,0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .stButton > button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0,212,255,0.6);
+        background: linear-gradient(135deg, #0099cc, #00d4ff);
+    }
+    .stButton > button:active {
+        transform: translateY(-1px);
+    }
+    .metric-card {
+        background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,212,255,0.1));
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid rgba(0,212,255,0.3);
+        backdrop-filter: blur(15px);
+    }
+    .stExpander > label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #00d4ff;
+    }
+    .stDataFrame {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    h1, h2, h3 {
+        color: #00d4ff;
+        text-shadow: 0 0 10px rgba(0,212,255,0.3);
+    }
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 5px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,212,255,0.1)) !important;
+        border-radius: 15px 15px 0 0 !important;
+        border: 1px solid rgba(0,212,255,0.3) !important;
+        color: white !important;
+        font-weight: 600;
+        padding: 1rem 2rem !important;
+        transition: all 0.3s ease !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background: linear-gradient(135deg, rgba(0,212,255,0.3), rgba(0,153,204,0.3)) !important;
+        transform: translateY(-2px);
+    }
+    .stTabs [data-baseweb="tab"][aria-selected=true] {
+        background: linear-gradient(135deg, #00d4ff, #0099cc) !important;
+        color: white !important;
+        box-shadow: 0 5px 20px rgba(0,212,255,0.4) !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -73,7 +183,14 @@ with tab1:
     vector_db = load_vector_db()
 
     # Show total papers
-    st.write("📚 Total Papers in Database:", vector_db.index.ntotal)
+    col_stats, col_space = st.columns([1,3])
+    with col_stats:
+        st.markdown("""
+        <div class='metric-card'>
+            <h2 style='color: #00d4ff; text-align: center;'>📚</h2>
+            <h3 style='color: white; text-align: center;'>"""+str(vector_db.index.ntotal)+""" Papers</h3>
+        </div>
+        """, unsafe_allow_html=True)
 
     # User input
     user_query = st.text_input("🔎 Ask a question about research papers:")
@@ -123,8 +240,12 @@ with tab1:
             answer = response.strip()
 
         # Show AI answer
-        st.subheader("🤖 AI Generated Insight")
-        st.write(answer)
+        st.markdown("""
+        <div class='css-1d391kg'>
+            <h3 style='color: #00d4ff;'>🤖 AI Generated Insight</h3>
+            <p style='font-size: 1.1rem; line-height: 1.6;'>"""+answer+"""</p>
+        </div>
+        """, unsafe_allow_html=True)
 
         # -------------------------
         # Show Only Relevant Paper
@@ -132,19 +253,19 @@ with tab1:
 
         if paper_titles and "none" not in [p.lower() for p in paper_titles]:
 
-            st.subheader("📄 Relevant Research Papers")
-
-            for doc in results:
-
-                title = doc.metadata.get("title", "")
-
-                for p in paper_titles:
-
-                    if title.lower() == p.lower():
-
-                        with st.expander(f"📄 {title}"):
-
-                            st.write(doc.page_content)
+            col1, col2 = st.columns(2)
+            relevant_found = False
+            for i, doc in enumerate(results):
+                title = doc.metadata.get("title", f"Paper {i+1}")
+                if any(p.lower() in title.lower() for p in paper_titles):
+                    with col1 if not relevant_found else col2:
+                        st.markdown(f"""
+                        <div class='css-1d391kg'>
+                            <h4 style='color: #00d4ff;'>📄 {title}</h4>
+                            <p>{doc.page_content[:500]}...</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    relevant_found = True
 
         else:
             st.warning("No relevant research paper found.")
@@ -227,10 +348,11 @@ with tab2:
     def draw_graph(data):
         
         net = Network(
-            height="600px",
+            height="700px",
             width="100%",
-            bgcolor="#111111",
-            font_color="white"
+            bgcolor="#0a0a0a",
+            font_color="white",
+            physics=True
         )
         
         for row in data:
@@ -275,17 +397,46 @@ with tab2:
         authors = df['author'].nunique()
         methods = df['method'].nunique()
           
-        col1, col2, col3 =st.columns(3)
-          
-        col1.metric("Total Papers", papers)
-        col2.metric("Total Authors", authors)
-        col3.metric("Total Methods", methods)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(f"""
+            <div class='metric-card'>
+                <h2 style='color: #00d4ff;'>📚</h2>
+                <h3 style='color: white;'>{papers}</h3>
+                <p style='color: #a0a0a0;'>Papers</p>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"""
+            <div class='metric-card'>
+                <h2 style='color: #4ade80;'>👥</h2>
+                <h3 style='color: white;'>{authors}</h3>
+                <p style='color: #a0a0a0;'>Authors</p>
+            </div>
+            """, unsafe_allow_html=True)
+        with col3:
+            st.markdown(f"""
+            <div class='metric-card'>
+                <h2 style='color: #f59e0b;'>⚙️</h2>
+                <h3 style='color: white;'>{methods}</h3>
+                <p style='color: #a0a0a0;'>Methods</p>
+            </div>
+            """, unsafe_allow_html=True)
           
         st.divider()
           
           
-        st.subheader("Filtered Research Data")
-        st.dataframe(df, use_container_width=True)
+        st.markdown('<h3 style="color: #00d4ff;">📊 Filtered Research Data</h3>')
+        st.dataframe(
+            df, 
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "paper": st.column_config.TextColumn("Paper", help="Paper Title"),
+                "author": st.column_config.TextColumn("Author", help="Authors"),
+                "method": st.column_config.TextColumn("Method", help="Methods Used"),
+            }
+        )
           
           
         #Export Excel Button
