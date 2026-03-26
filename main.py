@@ -344,42 +344,41 @@ with tab2:
         
     
     # Draw Graph
-    
-    def draw_graph(data):
-        
-        net = Network(
-            height="700px",
-            width="100%",
-            bgcolor="#0a0a0a",
-            font_color="white",
-            physics=True
-        )
-        
-        for row in data:
-            paper = row['paper']
-            author = row['author']
-            method = row['method']
-            domain = row['domain']
-            
-            net.add_node(paper, label=paper, color="orange")
-            
-            if author:
-                net.add_node(author, label=author, color="skyblue")
-                net.add_edge(author, paper)
-                
-            if method:
-                net.add_node(method, label=method, color="green")
-                net.add_edge(paper, method)
-                
-            if domain:
-                net.add_node(domain, label=domain, color="purple")
-                net.add_edge(paper, domain)
-                
-        net.save_graph("graph.html")
-        
-        with open("graph.html", 'r', encoding='utf-8') as f:
-            components.html(f.read(), height=600)
-    
+def draw_graph(data):
+
+    net = Network(
+        height="700px",
+        width="100%",
+        bgcolor="#222222",
+        font_color="white"
+    )
+
+    net.toggle_physics(True)
+
+    for row in data:
+        paper = row['paper']
+        author = row['author']
+        method = row['method']
+        domain = row['domain']
+
+        net.add_node(paper, label=paper, color="orange")
+
+        if author:
+            net.add_node(author, label=author, color="skyblue")
+            net.add_edge(author, paper)
+
+        if method:
+            net.add_node(method, label=method, color="green")
+            net.add_edge(paper, method)
+
+        if domain:
+            net.add_node(domain, label=domain, color="purple")
+            net.add_edge(paper, domain)
+
+    net.save_graph("graph.html")
+
+    with open("graph.html", 'r', encoding='utf-8') as f:
+        components.html(f.read(), height=600)
     
     # display data
     if domain:

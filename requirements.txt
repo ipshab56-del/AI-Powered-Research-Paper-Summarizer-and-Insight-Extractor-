@@ -26,7 +26,7 @@ langchain-community==0.0.34
 langchain-huggingface
 sentence-transformers==2.6.1
 faiss-cpu
-numpy
+# numpy
 
 
 neo4j
